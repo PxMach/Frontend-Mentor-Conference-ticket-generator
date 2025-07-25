@@ -5,7 +5,7 @@ import info from "../public/icon-info.svg";
 
 export default function Form() {
   return (
-    <form action="get" className="mt-4 mb-8 flex flex-col gap-5">
+    <form action="get" className="mt-4 mb-8 flex flex-col gap-5 sm:w-sm">
       <div className="flex flex-col gap-2">
         <label className="text-xl font-semibold text-gray-300">
           Upload Avatar

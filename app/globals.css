@@ -22,3 +22,9 @@ body {
   min-height: 100vh;
   font-family: "Inconsolata", monospace;
 }
+
+@media (min-width: 40rem) {
+  body {
+    background-image: url("../public/background-desktop.png");
+  }
+}
