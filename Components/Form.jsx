@@ -3,8 +3,11 @@ import Image from "next/image";
 import React from "react";
 import upload from "../public/icon-upload.svg";
 import info from "../public/icon-info.svg";
+import { useRouter } from "next/navigation";
 
-export default function Form() {
+export default function Form({ onSubmitSuccess }) {
+  const router = useRouter();
+
   const [formData, setFormData] = React.useState({
     fullname: "",
     email: "",
@@ -12,6 +15,8 @@ export default function Form() {
   });
 
   const [errors, setErrors] = React.useState({});
+
+  const [imagePreview, setImagePreview] = React.useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -41,10 +46,26 @@ export default function Form() {
     }
 
     setErrors(validationErrors);
+
     if (Object.keys(validationErrors).length === 0) {
-      alert("Form Submitted successfully");
+      onSubmitSuccess(formData);
+      localStorage.setItem("ticketData", JSON.stringify(formData));
+      router.push("/news");
     }
   };
+
+  function handleFileChange(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl); // stocké dans useState
+    }
+
+    if (file.size > 500 * 1024) {
+      alert("Image too large. Max: 500KB.");
+      return;
+    }
+  }
 
   return (
     <form
@@ -56,12 +77,23 @@ export default function Form() {
           Upload Avatar
         </label>
         <div className="bg-white/10 flex flex-col gap-3 items-center border-2 border-dashed border-gray-600 p-4 rounded-xl">
-          <Image
-            className="bg-white/10 border-1 border-gray-700 rounded-xl p-2"
-            src={upload}
-            alt="icon upload"
-            width={50}
-            height={100}
+          {imagePreview ? (
+            <Image
+              className="bg-white/10 border-1 border-gray-700 rounded-xl p-2"
+              src={imagePreview}
+              alt="uploaded preview"
+              width={50}
+              height={100}
+            />
+          ) : (
+            <Image src={upload} alt="icon upload" width={50} height={100} />
+          )}
+          <input
+            className="bg-white/10 border-1 border-gray-700 rounded-xl p-2 "
+            type="file"
+            name="avatar"
+            accept="image/png, image/jpeg"
+            onChange={handleFileChange}
           />
           <p className="text-lg text-gray-400">
             Drag and drop or click to upload
@@ -120,7 +152,7 @@ export default function Form() {
 
       <button
         type="submit"
-        className="bg-[#d96d49] border-gray-500 rounded-xl p-3 text-xl font-bold text-gray-950"
+        className="bg-[#d96d49] border-gray-500 rounded-xl p-3 text-xl font-bold text-gray-950 cursor-pointer"
       >
         Generate My Ticket
       </button>
