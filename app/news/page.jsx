@@ -16,7 +16,7 @@ export default function Ticket() {
   return (
     <main className="p-4 flex flex-col justify-center items-center">
       {data && <Congrat formData={data} />}
-      <Cart />
+      {data && <Cart formData={data} />}
     </main>
   );
 }
